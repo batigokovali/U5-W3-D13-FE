@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+
+#chat {
+  background-color: rgb(55, 55, 55);
+  color: white;
+  border-radius: 15px;
+}
+
+#chat-user {
+  background-color: rgb(2, 92, 76);
+  color: white;
+  border-radius: 15px;
+}
+
+.sender-row {
+  width: 50vw;
+  display: flex;
+  align-self: flex-end;
+}
+
+.receiver-row {
+  width: 50vw;
+  
+}

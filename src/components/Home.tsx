@@ -27,18 +27,25 @@ const Home = () => {
   const [loggedIn, setLoggedIn] = useState(false)
   const [chatHistory, setChatHistory] = useState<Message[]>([])
 
+  const [userID, setUserID] = useState("")
+  const [currentID, setCurrentID] = useState("")
+
   useEffect(() => {
     // this code will be executed only once
     // we want to set our event listeners only once
     // therefore this is the good place for them
     socket.on("welcome", welcomeMessage => {
       console.log(welcomeMessage)
+      setCurrentID(welcomeMessage.message)
 
       socket.on("loggedIn", onlineUsersList => {
         console.log(onlineUsersList)
         setOnlineUsers(onlineUsersList)
         setLoggedIn(true)
+        setUserID(onlineUsersList[onlineUsersList.length - 1].socketId)
       })
+
+
 
       socket.on("updateOnlineUsersList", updatedList => {
         setOnlineUsers(updatedList)
@@ -51,10 +58,13 @@ const Home = () => {
         // since we don't want that, we should use the set state function by passing a callback function instead
         // this is going to give us the possibility to access to the CURRENT state of the component (chat history filled with some messages)
         setChatHistory((chatHistory) => [...chatHistory, newMessage.message])
+
       })
     })
   }, [])
 
+  console.log("User ID is:", currentID)
+  console.log(chatHistory)
   const submitUsername = () => {
     // here we will be emitting the "setUsername" event (server is already listening for that)
     socket.emit("setUsername", { username })
@@ -64,7 +74,8 @@ const Home = () => {
     const newMessage = {
       sender: username,
       text: message,
-      createdAt: new Date().toLocaleString("en-US")
+      createdAt: new Date().toLocaleString("en-gb"),
+      socketID: userID,
     }
     socket.emit("sendMessage", { message: newMessage })
     setChatHistory([...chatHistory, newMessage])
@@ -92,8 +103,39 @@ const Home = () => {
           </Form>
           {/* )} */}
           {/* MIDDLE AREA: CHAT HISTORY */}
-          <ListGroup>
-            {chatHistory.map((message, index) => (<ListGroup.Item key={index}>{<strong>{message.sender} </strong>} | {message.text} at {message.createdAt}</ListGroup.Item>))}
+          <ListGroup className="d-flex">
+            {chatHistory.map((message, index) => ((message.socketID === currentID ? (
+              <ListGroup.Item className="mb-2 sender-row" id="chat-user" key={index}>
+                <Row className="pl-2" >
+                  <Col className="d-flex justify-content-end">
+                    {message.text}
+                  </Col>
+                </Row>
+                <Row >
+                  <Col className="d-flex justify-content-end">
+                    {message.createdAt}
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+            ) : (<ListGroup.Item className="mb-2 receiver-row" id="chat" key={index}>
+              <Row className="pl-2">
+                <strong>{message.sender}</strong>
+              </Row>
+              <Row>
+                <Col className="pl-2">
+                  {message.text}
+                </Col>
+              </Row>
+              <Row>
+                <Col className="d-flex justify-content-end">
+                  {message.createdAt}
+                </Col>
+              </Row>
+
+
+            </ListGroup.Item>))
+
+            ))}
           </ListGroup>
           {/* BOTTOM AREA: NEW MESSAGE */}
           <Form
