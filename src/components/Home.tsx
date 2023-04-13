@@ -1,20 +1,15 @@
 import { useState, useEffect } from "react"
-import {
-  Container,
-  Row,
-  Col,
-  Form,
-  FormControl,
-  ListGroup,
-} from "react-bootstrap"
+import { Container, Row, Col, Form, FormControl, ListGroup } from "react-bootstrap"
 import { io } from 'socket.io-client'
 import { User, Message } from '../types'
 
-// 1. Every time we refresh the page, we reconnect to the socket.io server
-// 2. If the connection is correctly established, the server will emit to us an event called 'welcome' containing a message with the id of the connection
+// 1. Every time when the page refreshes, user has ro reconnect to the socket.io server
+// 2. The server will emit an event called "welcome" containing a message with the id of the connection, IF only connection is correctly established
 // 3. If we want to do something when the event happens we shall LISTEN to that event by using socket.on("welcome", () => {})
-// 4. Once we are connected we would like to submit the username to the server --> we are going to EMIT an event called "setUsername", containing the username itself as payload
-// 5. Server is listening for "setUsername" event, WHEN it receives that event it will send a "loggedIn" event to this client, and broadcast to all the other users another event with the updated list of users
+// 4. After the user connects, the user sends the username to the server with emitting an event called "setUsername". Payload contains the username
+// 5. Server is listening for "setUsername" event.
+// 5.1 When the server receives the "setUsername" event, it will send a "loggedIn" event to the user.
+// 5.2 After sending the "loggedIn" event, server broadcasts to all other online users with another event, with the updated list of onlineUsers
 // 6. The list of online users is updated only during "login", but what happens if a new user joins after the "login"? In this case we are not updating the list
 // 7. When a new user joins server emits an event called "updateOnlineUsersList", this is supposed to update that list when a user joins or leaves
 // 8. When the client wants to send a message, it needs to EMIT an event called "sendMessage", as payload it should contain: sender, text, date
