@@ -21,14 +21,14 @@ const socket = io("http://localhost:3001", { transports: ['websocket'] }) // if 
 
 
 const Home = () => {
-  const [username, setUsername] = useState("")
-  const [message, setMessage] = useState("")
-  const [onlineUsers, setOnlineUsers] = useState<User[]>([])
+  const [username, setUsername] = useState("") //will be fetched from db
+  const [message, setMessage] = useState("") //will be fetched from db
+  const [onlineUsers, setOnlineUsers] = useState<User[]>([]) //will be fetched from db
   const [loggedIn, setLoggedIn] = useState(false)
-  const [chatHistory, setChatHistory] = useState<Message[]>([])
+  const [chatHistory, setChatHistory] = useState<Message[]>([]) //will be fetched from db
 
-  const [userID, setUserID] = useState("")
-  const [currentID, setCurrentID] = useState("")
+  const [userID, setUserID] = useState("") //will be fetched from db
+  const [currentID, setCurrentID] = useState("") //will be fetched from db
 
   useEffect(() => {
     // this code will be executed only once
